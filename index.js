@@ -8,7 +8,7 @@ const app = new express();
 const mongoose = require('mongoose');
 const Schema = require('./schema');
 
-const mongoURI = "mongodb+srv://devansh:FPsbirZt21hBdkZW@fullstack.twtao.mongodb.net/?retryWrites=true&w=majority&appName=fullstack";
+const mongoURI = "mongodb+srv://devansh:${{ secrets.SECRET_KEY }}@fullstack.twtao.mongodb.net/?retryWrites=true&w=majority&appName=fullstack";
 
 // Connect to MongoDB using Mongoose
 mongoose.connect(mongoURI, {
