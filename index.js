@@ -6,9 +6,8 @@ const ejs = require('ejs');
 const { copyFileSync } = require('fs');
 const app = new express();
 const mongoose = require('mongoose');
-const Schema = require('./schema');
 
-const mongoURI = "mongodb+srv://devansh:${{ secrets.DEV_KEY }}@fullstack.twtao.mongodb.net/?retryWrites=true&w=majority&appName=fullstack";
+const mongoURI = "mongodb+srv://devansh:FPsbirZt21hBdkZW@fullstack.twtao.mongodb.net/?retryWrites=true&w=majority&appName=fullstack";
 
 // Connect to MongoDB using Mongoose
 mongoose.connect(mongoURI, {
@@ -19,30 +18,10 @@ mongoose.connect(mongoURI, {
     .then(() => console.log('MongoDB connected successfully'))
     .catch(err => console.error('Error connecting to MongoDB:', err));
 
-const User = mongoose.model('User2', Schema);
+// Parse JSON and URL-encoded form data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-async function createUser() {
-    try {
-        const newUser = new User({
-            firstname: 'Dev',
-            lastname: 'Wick',
-            licenseNo: '123456789',
-            age: 30,
-            carDetails: {
-                make: 'Toyota',
-                model: 'Camry',
-                year: 2023,
-                plateNo: 'ABC123',
-            },
-        });
-
-        await newUser.save();
-        console.log('User created successfully');
-    } catch (err) {
-        console.error('Error creating user:', err);
-    }
-}
-createUser();
 // to load static js and vendors
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -72,4 +51,38 @@ app.get('/login', (req, res) => {
 // Start the server
 app.listen(3000, () => {
     console.log('Server started on port 3000');
+});
+
+
+app.post('/submitg2', async (req, res) => {
+  const { firstName, lastName, licenseNumber, age, dob, make, model, year, plateNumber } = req.body;
+
+  // Use the User model you created earlier
+  const User = require('./models/schema'); // Replace with actual path
+
+  try {
+    // Create a new User instance with form data
+    const newUser = new User({
+      firstName,
+      lastName,
+      licenseNumber,
+      age,
+      dob: new Date(dob), // Convert dob string to Date object (assuming it's a date string)
+      car: {
+        make,
+        model,
+        year,
+        plateNumber
+      }
+    });
+
+    // Save the user to the database
+    const savedUser = await newUser.save();
+
+    console.log("Created user", savedUser);
+    res.redirect('/'); // Redirect to homepage after successful submission
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).send('Internal Server Error');
+  }
 });
