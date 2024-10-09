@@ -7,7 +7,7 @@ const { copyFileSync } = require('fs');
 const app = new express();
 const mongoose = require('mongoose');
 
-const mongoURI = "mongodb+srv://devansh:FPsbirZt21hBdkZW@fullstack.twtao.mongodb.net/?retryWrites=true&w=majority&appName=fullstack";
+const mongoURI = "mongodb+srv://devansh:{{ dev.key }}@fullstack.twtao.mongodb.net/?retryWrites=true&w=majority&appName=fullstack";
 
 // Connect to MongoDB using Mongoose
 mongoose.connect(mongoURI, {
@@ -57,8 +57,7 @@ app.listen(3000, () => {
 app.post('/submitg2', async (req, res) => {
   const { firstName, lastName, licenseNumber, age, dob, make, model, year, plateNumber } = req.body;
 
-  // Use the User model you created earlier
-  const User = require('./models/schema'); // Replace with actual path
+  const User = require('./models/schema');
 
   try {
     // Create a new User instance with form data
@@ -67,7 +66,7 @@ app.post('/submitg2', async (req, res) => {
       lastName,
       licenseNumber,
       age,
-      dob: new Date(dob), // Convert dob string to Date object (assuming it's a date string)
+      dob: new Date(dob),
       car: {
         make,
         model,
